@@ -46,7 +46,7 @@ export class LocationRepository {
         }
 
         try {
-            const country: Country[] = await this.countryModel.find(whereCond).lean().exec();
+            const country = await this.countryModel.find(whereCond).lean().exec() as unknown as Country[];
             return transformId(country);
         } catch (error) {
             return null;
@@ -62,7 +62,7 @@ export class LocationRepository {
         }
 
         try {
-            const state: State[] = await this.stateModel.find(condition).lean().exec();
+            const state = await this.stateModel.find(condition).lean().exec() as unknown as State[];
             return transformId(state);
         } catch (error) {
             return null;
@@ -78,7 +78,7 @@ export class LocationRepository {
         }
 
         try {
-            const city: City[] = await this.cityModel.find(condition).lean().exec();
+            const city = await this.cityModel.find(condition).lean().exec() as unknown as City[];
             return transformId(city);
         } catch (error) {
             return null;

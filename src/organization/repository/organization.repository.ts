@@ -20,13 +20,13 @@ export class OrganizationRepository {
     private userRepository: UserRepository
   ) { }
 
-  async create(createOrganizationDto): Promise<string>{
-    
+  async create(createOrganizationDto): Promise<string> {
+
     const session = await this.organizationModel.db.startSession();
     session.startTransaction();
 
     try {
-      const {password, ...organizationData} = createOrganizationDto;
+      const { password, ...organizationData } = createOrganizationDto;
       const organization = await this.organizationModel.create([organizationData], { session });
 
       const branchData = {
@@ -62,7 +62,7 @@ export class OrganizationRepository {
 
     } catch (error) {
       await session.abortTransaction();
-      
+
       if (error.code === 11000) { // MongoDB duplicate key error code
         throw new ConflictException('Organization ID already exists');
       }
@@ -94,13 +94,13 @@ export class OrganizationRepository {
   }
 
   async fetchOrganizationType() {
-    const orgType: OrganizationType[] = await this.organizationTypeModel.find().lean().exec();
+    const orgType = await this.organizationTypeModel.find().lean().exec() as unknown as OrganizationType[];
     return transformId(orgType);
   }
 
   async findOrganization(condition: GetOrganizationQueryDto): Promise<Organization[]> {
     try {
-      const organization: Organization[] = await this.organizationModel.find(condition).lean().exec();
+      const organization = await this.organizationModel.find(condition).lean().exec() as unknown as Organization[];
       return transformId(organization);
     } catch (error) {
       return null;
