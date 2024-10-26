@@ -17,31 +17,23 @@ async function bootstrap() {
       exclude: [{ path: '/', method: RequestMethod.GET }],
     });
 
-    let connectSrc = [
-      "'self'",
-    ];
+    let connectSrc = ["'self'"];
 
     if (process.env.NODE_ENV === Environment.DEVELOPMENT) {
       connectSrc.push('*');
-      app.enableCors()
+      app.enableCors();
       const config = new DocumentBuilder()
         .setTitle('eLearning API Documentation')
         .setDescription('REST API for the eLearning')
         .setVersion('1.0')
-        .addBearerAuth() // Ensure Bearer Auth is added here
+        .addBearerAuth()
         .addTag('eLearning')
         .build();
       const document = SwaggerModule.createDocument(app, config);
       SwaggerModule.setup('api', app, document);
     }
 
-    // app.use(cookieParser()) // node module
     app.enableVersioning();
-    // app.use(
-    //   compression({
-    //     threshold: 1000,
-    //   }), // node module
-    // );
     const requestInterceptor = app.get(RequestInterceptor);
     app.useGlobalInterceptors(
       new ClassSerializerInterceptor(app.get(Reflector)),
@@ -56,19 +48,15 @@ async function bootstrap() {
   return app;
 }
 
-// Export a handler function for Vercel
-export const handler = async (req, res) => {
-  const app = await bootstrap();
-  const expressInstance = app.getHttpAdapter().getInstance();
-  return expressInstance(req, res);
-};
+// Export the Vercel-compatible handler function
+export const handler = createHandler(await bootstrap());
 
-// Optionally, keep the bootstrap() call for local development
+// For local development
 if (process.env.NODE_ENV !== 'production') {
   bootstrap().then((app) => {
     const port = parseInt(process.env.PORT, 10) || 4000;
     app.listen(port, () => {
-      console.log(`server running on ${port}`);
+      console.log(`server running on http://localhost:${port}`);
     });
   });
 }
