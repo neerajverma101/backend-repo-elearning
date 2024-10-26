@@ -5,6 +5,7 @@ import { Environment } from './core/enums/environment.enum';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { RequestInterceptor } from './core/interceptor/req.interceptor';
+import { createHandler } from '@nestjs/platform-serverless';
 
 let app: NestExpressApplication;
 
