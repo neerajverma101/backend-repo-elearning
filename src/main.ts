@@ -5,7 +5,6 @@ import { Environment } from './core/enums/environment.enum';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { RequestInterceptor } from './core/interceptor/req.interceptor';
-import { createHandler } from '@nestjs/platform-serverless';
 
 let app: NestExpressApplication;
 
@@ -48,8 +47,12 @@ async function bootstrap() {
   return app;
 }
 
-// Export the Vercel-compatible handler function
-export const handler = createHandler(await bootstrap());
+// For Vercel serverless deployment
+export default async function handler(req, res) {
+  const app = await bootstrap();
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp(req, res);
+}
 
 // For local development
 if (process.env.NODE_ENV !== 'production') {
