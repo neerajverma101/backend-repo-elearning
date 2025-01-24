@@ -18,19 +18,19 @@ async function bootstrap() {
     });
 
 
-    if (process.env.NODE_ENV === Environment.DEVELOPMENT) {
-      const connectSrc = ["'self'"];
-      connectSrc.push('*');
-      const config = new DocumentBuilder()
-        .setTitle('eLearning API Documentation')
-        .setDescription('REST API for the eLearning')
-        .setVersion('1.0')
-        .addBearerAuth()
-        .addTag('eLearning')
-        .build();
-      const document = SwaggerModule.createDocument(app, config);
-      SwaggerModule.setup('api', app, document);
-    }
+    // if (process.env.NODE_ENV === Environment.DEVELOPMENT) {
+    const connectSrc = ["'self'"];
+    connectSrc.push('*');
+    const config = new DocumentBuilder()
+      .setTitle('eLearning API Documentation')
+      .setDescription('REST API for the eLearning')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .addTag('eLearning')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
+    // }
 
     if (!cachedRequestInterceptor) {
       cachedRequestInterceptor = app.get(RequestInterceptor);
