@@ -46,14 +46,14 @@ async function bootstrap() {
 }
 
 // For Vercel serverless deployment
-export default async function handler(req, res) {
-  if (!app) {
-    await bootstrap();
-  }
-  const expressApp = app.getHttpAdapter().getInstance();
-  expressApp(req, res);
-  console.log(`Request served in region: ${process.env.VERCEL_REGION}`);
-}
+// export default async function handler(req, res) {
+//   if (!app) {
+//     await bootstrap();
+//   }
+//   const expressApp = app.getHttpAdapter().getInstance();
+//   expressApp(req, res);
+//   console.log(`Request served in region: ${process.env.VERCEL_REGION}`);
+// }
 
 // For local development
 if (!process.env.VERCEL) {
