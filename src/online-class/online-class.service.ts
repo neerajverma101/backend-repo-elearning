@@ -58,4 +58,8 @@ export class OnlineClassService {
             throw new HttpException('Failed to get recordings of the class', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    async deleteOnlineClassByRoomId(roomId: string): Promise<Boolean> {
+        return await this.onlineClassRepository.deleteOnlineClassByRoomId(roomId);
+    }
 }

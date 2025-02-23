@@ -7,14 +7,19 @@ import { GetOnlineClassQueryDto } from "../dto/get-online-class-query.dto";
 import { OnlineClassWithDetails } from "src/core/interface/online-class.interface";
 import { DEFAULT_BRANCH_ID } from "src/core/utils/string.utils";
 import { DEFAULT_TEACHER } from '../../core/utils/string.utils';
+import { DeleteResult } from "mongodb";
 
 @Injectable()
 export class OnlineClassRepository {
   constructor(@InjectModel(OnlineClass.name) private onlineClassModel: Model<OnlineClass>) { }
 
   async createOnlineClass(onlineClassDto: OnlineClassDto, roomInfoDto: RoomInfoDto): Promise<boolean> {
+    const payload = { ...onlineClassDto, ...DEFAULT_BRANCH_ID, hmsRoomInfo: roomInfoDto }
+    if (payload.teacherId === undefined) {
+      payload.teacherId = DEFAULT_TEACHER;
+    }
     try {
-      const createTeacher = new this.onlineClassModel({ ...onlineClassDto, ...DEFAULT_BRANCH_ID, ...DEFAULT_TEACHER, hmsRoomInfo: roomInfoDto });
+      const createTeacher = new this.onlineClassModel(payload);
       const res = await createTeacher.save();
       return res ? true : false;
     } catch (error) {
@@ -75,6 +80,7 @@ export class OnlineClassRepository {
             _id: 1,
             title: 1,
             description: 1,
+            thumbnail: 1,
             branch: {
               _id: '$branch._id',
               name: '$branch.name'
@@ -104,4 +110,13 @@ export class OnlineClassRepository {
     }
   }
 
+  async deleteOnlineClassByRoomId(roomId: string): Promise<DeleteResult> {
+    try {
+      const result = await this.onlineClassModel.deleteOne({ _id: roomId });
+      return result;
+    } catch (error) {
+      console.error('Error deleting online class by room id:', error);
+      throw new Error('Error deleting online class by room id');
+    }
+  }
 }

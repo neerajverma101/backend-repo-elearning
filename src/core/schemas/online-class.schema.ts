@@ -4,6 +4,8 @@ import { BaseSchema, BaseSchemaOptions } from './base.schema';
 import { Branch } from './branch.schema';
 import { Class } from './class.schema';
 import { Auth } from './auth.schema';
+import { Teacher } from './teacher.schema';
+import { TeacherRoutes } from 'src/teachers/teacher.routes';
 
 @BaseSchemaOptions()
 export class OnlineClass extends BaseSchema {
@@ -32,7 +34,17 @@ export class OnlineClass extends BaseSchema {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Auth' })
   createdBy?: Auth;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Auth' })
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId, ref: 'Auth', formControl: {
+      name: 'autosuggest',
+      label: 'Hosted By',
+      apiDetails: {
+        endpoint: TeacherRoutes.FETCH_TEACHER,
+        onMount: true,
+        resultKey: 'fullName'
+      }
+    }
+  })
   teacherId?: Auth;
 
   @Prop({
@@ -58,6 +70,9 @@ export class OnlineClass extends BaseSchema {
     enabled: boolean;
     created_at: Date;
   };
+
+  @Prop({ type: String, })
+  thumbnail?: string;
 }
 
 export const OnlineClassSchema = SchemaFactory.createForClass(OnlineClass);

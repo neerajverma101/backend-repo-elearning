@@ -16,7 +16,7 @@ export class ClassService {
         return await this.classRepository.fetchClassDetails(condition);
     }
 
-    async deleteClass(id: string): Promise<Class[]> {
+    async deleteClass(id: string): Promise<any> {
         await this.classRepository.deleteClass(id);
     }
 

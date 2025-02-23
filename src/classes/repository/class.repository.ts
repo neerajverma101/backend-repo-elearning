@@ -150,7 +150,7 @@ export class ClassRepository {
         }
     }
 
-    async deleteClass(id: string): Promise<void> {
+    async deleteClass(id: string): Promise<any> {
         try {
             const res = await this.classModel.findByIdAndDelete(new Types.ObjectId(id)).exec();
             return res

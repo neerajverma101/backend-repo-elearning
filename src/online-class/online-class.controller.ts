@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Param, Post, Put } from "@nestjs/common";
 import { OnlineClassService } from "./online-class.service";
 import { OnlineClassDto, UpdateOnlineClassDto } from "./dto/online-class.dto";
 import { GetOnlineClassQueryDto } from "./dto/get-online-class-query.dto";
@@ -36,5 +36,12 @@ export class OnlineClassController {
     @Post('recordings')
     async getRecordingsByRoomId(@Body() { roomId = '' }: { roomId: '' }) {
         return await this.onlineClassService.getRecordingsByRoomId({ roomId })
+    }
+
+    @ApiOperation({ summary: 'Delete online class by room ID' })
+    @ApiResponse({ status: 200, description: 'Deleted class successfully' })
+    @Delete(':roomId')
+    async deleteOnlineClassByRoomId(@Param('roomId') roomId: string) {
+        return await this.onlineClassService.deleteOnlineClassByRoomId(roomId)
     }
 }

@@ -157,6 +157,7 @@ export class TeacherRepository {
             _id: 1,
             firstName: 1,
             lastName: 1,
+            fullName: { $concat: ['$firstName', ' ', '$lastName'] },
             address: 1,
             pincode: 1,
             email: 1,

@@ -38,6 +38,10 @@ export class OnlineClassDto {
     @IsMongoId()
     teacherId?: Types.ObjectId;
 
+    @IsOptional()
+    @IsString()
+    thumbnail: string
+
     constructor(partial: Partial<OnlineClassDto>) {
         Object.assign(this, partial);
     }
