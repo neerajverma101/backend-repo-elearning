@@ -353,9 +353,53 @@ export class StudentRepository {
       throw error;
     }
   }
+
   async delete(id: string) {
     console.log(id);
     const data = this.studentModel.findByIdAndDelete(id).exec();
     return data;
+  }
+
+  async updateEnrollments(studentIds: Types.ObjectId[], classIds: Types.ObjectId[]): Promise<void> {
+    const session = await this.studentModel.db.startSession();
+    session.startTransaction();
+
+    try {
+      const students = await this.studentModel.find({ _id: { $in: studentIds } }).select('branchId');
+      if (students.length !== studentIds.length) {
+        throw new NotFoundException('One or more students not found');
+      }
+
+      // Remove existing enrollments for the specified students
+      await this.studentEnrollmentModel.deleteMany({
+        teacherId: { $in: studentIds }
+      }, { session });
+
+      // Prepare bulk insert operation
+      const bulkOps = students.flatMap(teacher =>
+        classIds.map(classId => ({
+          insertOne: {
+            document: {
+              branchId: teacher.branchId,
+              studentId: teacher._id,
+              classId: classId,
+              enrollmentDate: new Date()
+            }
+          }
+        }))
+      );
+
+      // Execute bulk insert
+      if (bulkOps.length > 0) {
+        await this.studentEnrollmentModel.bulkWrite(bulkOps, { session });
+      }
+
+      await session.commitTransaction();
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
   }
 }

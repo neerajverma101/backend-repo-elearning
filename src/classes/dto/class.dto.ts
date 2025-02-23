@@ -18,3 +18,9 @@ export class ClassDto {
         Object.assign(this, partial);
     }
 }
+
+export class UpdateClassDto extends ClassDto {
+    @IsNotEmpty()
+    @IsMongoId()
+    _id: Types.ObjectId;
+}

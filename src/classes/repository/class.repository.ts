@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import { Class } from "src/core/schemas/class.schema";
-import { ClassDto } from "../dto/class.dto";
+import { ClassDto, UpdateClassDto } from "../dto/class.dto";
 import { GetClassQueryDto } from "../dto/get-class-query.dto";
 import { ClassWithDetails } from "src/core/interface/class.interface";
 import { DEFAULT_BRANCH_ID } from "src/core/utils/string.utils";
@@ -147,6 +147,26 @@ export class ClassRepository {
         } catch (error) {
             console.error('Error fetching class with details:', error);
             throw new Error('Error fetching class with details');
+        }
+    }
+
+    async deleteClass(id: string): Promise<void> {
+        try {
+            const res = await this.classModel.findByIdAndDelete(new Types.ObjectId(id)).exec();
+            return res
+        } catch (error) {
+            console.error('Error deleting class:', error);
+            throw new Error('Error deleting class');
+        }
+    }
+
+    async updateClass(updateClassDto: UpdateClassDto): Promise<any> {
+        try {
+            const res = await this.classModel.findByIdAndUpdate(new Types.ObjectId(updateClassDto._id), updateClassDto).exec();
+            return res;
+        } catch (error) {
+            console.error('Error updating class:', error);
+            throw new Error('Error updating class');
         }
     }
 }

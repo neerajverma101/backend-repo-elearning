@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Put, Param, Request, UseGuards, Delete, Query } from "@nestjs/common";
 import { StudentService } from "./student.service";
-import { SearchStudentDto, StudentDto, UpdateStudentDto } from "./dto/student.dto";
+import { SearchStudentDto, StudentDto, UpdateStudentDto, UpdateStudentEnrollmentsDto } from "./dto/student.dto";
 import { DbQueryConditionDto } from "./dto/db-query-condition.dto";
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from "@nestjs/swagger";
 import { PassportJwtAuthGuard } from "src/auth/guards/passport-jwt.guard";
@@ -70,6 +70,15 @@ export class StudentController {
     @ApiResponse({ status: 404, description: 'student not found.' })
     remove(@Query('id') id) {
         return this.studentService.removeStudent(id);
+    }
+
+    @Post('update-enrollments')
+    @ApiOperation({ summary: 'Update student enrollments' })
+    @ApiResponse({ status: 200, description: 'Student enrollments updated successfully.' })
+    @ApiResponse({ status: 400, description: 'Bad Request.' })
+    @ApiBody({ type: UpdateStudentEnrollmentsDto })
+    async updateTeacherEnrollments(@Body() updateEnrollmentsDto: UpdateStudentEnrollmentsDto) {
+        return await this.studentService.updateStudentEnrollments(updateEnrollmentsDto);
     }
 
 }

@@ -1,6 +1,6 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Param, Post, Put, UseGuards } from "@nestjs/common";
 import { ClassService } from "./class.service";
-import { ClassDto } from "./dto/class.dto";
+import { ClassDto, UpdateClassDto } from "./dto/class.dto";
 import { GetClassQueryDto } from "./dto/get-class-query.dto";
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { PassportJwtAuthGuard } from "src/auth/guards/passport-jwt.guard";
@@ -23,5 +23,19 @@ export class ClassController {
     @Post('fetch')
     async fetchClass(@Body() condition: GetClassQueryDto) {
         return await this.classService.fetchClass(condition);
+    }
+
+    @ApiOperation({ summary: 'Delete a class' })
+    @ApiResponse({ status: 200, description: 'Class deleted successfully' })
+    @Delete(':id')
+    async deleteClass(@Param('id') id: string) {
+        return await this.classService.deleteClass(id);
+    }
+
+    @ApiOperation({ summary: 'Update class' })
+    @ApiResponse({ status: 201, description: 'Class updated successfully' })
+    @Put('update')
+    async updateClass(@Body() classDto: UpdateClassDto) {
+        return await this.classService.update(classDto);
     }
 }

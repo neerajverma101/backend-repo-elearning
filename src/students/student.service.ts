@@ -7,7 +7,7 @@ import { AuthUtils } from 'src/core/utils/auth.utils';
 import { IsUserExistDto } from 'src/users/dto/user.dto';
 import { UserService } from 'src/users/users.service';
 import { DbQueryConditionDto } from './dto/db-query-condition.dto';
-import { StudentDto, UpdateStudentDto } from './dto/student.dto';
+import { StudentDto, UpdateStudentDto, UpdateStudentEnrollmentsDto } from './dto/student.dto';
 import { StudentRepository } from './repository/student.repository';
 import { transformId } from 'src/core/utils/mongo-res.utils';
 
@@ -78,14 +78,30 @@ export class StudentService {
     }
 
     async updateStudent(studentDto: UpdateStudentDto) {
-        const updatedStudent = await this.studentRepository.update( studentDto);
+        const updatedStudent = await this.studentRepository.update(studentDto);
         if (!updatedStudent) {
             throw new NotFoundException(`Student not found`);
         }
         return updatedStudent;
     }
-    async removeStudent(id: string){
-        const response = await this.studentRepository.delete( id);
+    async removeStudent(id: string) {
+        const response = await this.studentRepository.delete(id);
         return response
+    }
+
+    async updateStudentEnrollments(updateEnrollmentsDto: UpdateStudentEnrollmentsDto): Promise<ApiResponseDto> {
+        try {
+            await this.studentRepository.updateEnrollments(
+                updateEnrollmentsDto.studentIds,
+                updateEnrollmentsDto.classIds
+            );
+            return new ApiResponseDto(true, 'Student enrollments updated successfully');
+        } catch (error) {
+            console.error('Error updating student enrollments:', error);
+            if (error instanceof NotFoundException) {
+                return new ApiResponseDto(false, error.message);
+            }
+            return new ApiResponseDto(false, 'Failed to update student enrollments');
+        }
     }
 }
