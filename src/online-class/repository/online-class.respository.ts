@@ -16,7 +16,7 @@ export class OnlineClassRepository {
   async createOnlineClass(onlineClassDto: OnlineClassDto, roomInfoDto: RoomInfoDto): Promise<boolean> {
     const payload = { ...onlineClassDto, ...DEFAULT_BRANCH_ID, hmsRoomInfo: roomInfoDto }
     if (payload.teacherId === undefined) {
-      payload.teacherId = DEFAULT_TEACHER;
+      payload.teacherId = new Types.ObjectId(DEFAULT_TEACHER.teacherId);
     }
     try {
       const createTeacher = new this.onlineClassModel(payload);

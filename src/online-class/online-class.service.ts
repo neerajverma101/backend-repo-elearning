@@ -7,6 +7,7 @@ import { OnlineClassRepository } from './repository/online-class.respository';
 import { OnlineClass } from 'src/core/schemas/online-class.schema';
 import { HMSRepository } from './repository/online-class-create-hmsroom.repository';
 import { Teacher } from 'src/core/schemas/teacher.schema';
+import { DeleteResult } from 'mongodb';
 
 @Injectable()
 export class OnlineClassService {
@@ -59,7 +60,7 @@ export class OnlineClassService {
         }
     }
 
-    async deleteOnlineClassByRoomId(roomId: string): Promise<Boolean> {
+    async deleteOnlineClassByRoomId(roomId: string): Promise<DeleteResult> {
         return await this.onlineClassRepository.deleteOnlineClassByRoomId(roomId);
     }
 }
